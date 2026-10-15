@@ -179,13 +179,13 @@
       </nav>
      </div>
      <div class="sidebar-bottom space-y-3">
-      <!-- โซนคลิกตั้งค่า "โปรไฟล์ผู้ดูแลและรูปภาพ" ด้านล่าง -->
-      <div id="userProfileCard" class="flex items-center justify-between rounded-2xl bg-white/10 border border-white/10 p-3 cursor-pointer hover:bg-white/15 transition" title="คลิกเพื่อแก้ไขโปรไฟล์ผู้ดูแล">
+      <!-- โซนคลิกตั้งค่า "โปรไฟล์ผู้ดูแลและสิทธิ์การเข้าถึง" ด้านล่าง -->
+      <div id="userProfileCard" class="flex items-center justify-between rounded-2xl bg-white/10 border border-white/10 p-3 cursor-pointer hover:bg-white/15 transition" title="คลิกเพื่อแก้ไขโปรไฟล์ผู้ดูแลและสิทธิ์">
        <div class="flex items-center gap-3 min-w-0">
         <img id="sidebarUserAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover bg-white/20 shrink-0">
         <div class="min-w-0">
          <p id="sidebarUserName" class="text-xs font-semibold text-white truncate"></p>
-         <p id="sidebarUserEmail" class="text-[10px] text-[#b7c4bc] truncate"></p>
+         <p id="sidebarUserRoleBadge" class="text-[10px] text-[#7dd5a4] truncate font-medium"></p>
         </div>
        </div>
        <i data-lucide="settings" class="w-4 h-4 text-white/60 shrink-0"></i>
@@ -459,7 +459,7 @@
    </div>
   </div>
 
-  <!-- หน้าต่างที่ 1: ตั้งค่าชื่อเว็บและอัปโหลดโลโก้เว็บ -->
+  <!-- หน้าต่างที่ 1: ตั้งค่าชื่อเว็บและโลโก้เว็บ -->
   <div id="brandModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
    <div class="w-full max-w-[420px] rounded-[24px] bg-[#fffdf8] p-6 shadow-2xl fade-in">
     <div class="flex items-start justify-between">
@@ -483,17 +483,25 @@
    </div>
   </div>
 
-  <!-- หน้าต่างที่ 2: ตั้งค่าโปรไฟล์ผู้ดูแลและอัปโหลดรูปโปรไฟล์ -->
+  <!-- หน้าต่างที่ 2: ตั้งค่าโปรไฟล์ผู้ดูแลและสิทธิ์การเข้าถึง -->
   <div id="profileModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
    <div class="w-full max-w-[420px] rounded-[24px] bg-[#fffdf8] p-6 shadow-2xl fade-in">
     <div class="flex items-start justify-between">
      <div>
-      <h2 class="font-semibold text-[#22392e]" style="font-size: 24px;">ตั้งค่าโปรไฟล์ผู้ดูแล</h2>
-      <p class="text-sm text-[#7c8780] mt-1" style="font-size: 16px;">แก้ไขชื่อผู้ดูแลและอัปโหลดรูปภาพโปรไฟล์ของคุณ</p>
+      <h2 class="font-semibold text-[#22392e]" style="font-size: 24px;">ตั้งค่าโปรไฟล์ผู้ดูแลและสิทธิ์</h2>
+      <p class="text-sm text-[#7c8780] mt-1" style="font-size: 16px;">แก้ไขชื่อผู้ดูแล รูปภาพ และสิทธิ์การเข้าถึงระบบ</p>
      </div><button id="closeProfileModal" class="focus-ring w-9 h-9 rounded-xl hover:bg-[#f0eee9] flex items-center justify-center text-[#718078]" aria-label="ปิด"> <i data-lucide="x" class="w-4 h-4"></i> </button>
     </div>
     <form id="profileForm" class="mt-6 space-y-4">
-     <div><label for="profileName" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ชื่อผู้ดูแล (user@example.com)</label> <input id="profileName" type="text" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     <div><label for="profileName" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ชื่อผู้ดูแล</label> <input id="profileName" type="text" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     </div>
+     <div>
+      <label for="profileRole" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">สิทธิ์การเข้าถึงระบบ (Role)</label> 
+      <select id="profileRole" class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+        <option value="ผู้ดูแลระบบสูงสุด (Admin)">ผู้ดูแลระบบสูงสุด (Admin)</option>
+        <option value="ผู้ช่วยผู้ดูแล (Editor)">ผู้ช่วยผู้ดูแล (Editor)</option>
+        <option value="ผู้ตรวจสอบบัญชี (Viewer)">ผู้ตรวจสอบบัญชี (Viewer)</option>
+      </select>
      </div>
      <div>
       <label class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">อัปโหลดรูปภาพโปรไฟล์จากเครื่อง</label> 
@@ -526,24 +534,25 @@
     let currentUser = JSON.parse(localStorage.getItem('flowledger_user')) || {
       name: 'ผู้ดูแลเณรต่อ',
       email: 'user@example.com',
+      role: 'ผู้ดูแลระบบสูงสุด (Admin)',
       avatar: '',
       appName: 'วัดตึกราชา',
       appLogo: ''
     };
 
     let categories = JSON.parse(localStorage.getItem('flowledger_categories')) || {
-      income: ['เงินเดือน', 'ฟรีแลนซ์', 'โบนัส'],
-      expense: ['อาหาร', 'เดินทาง', 'ช้อปปิ้ง', 'ที่พัก', 'สุขภาพ', 'บันเทิง']
+      income: ['โยมถวาย'],
+      expense: ['ค่าไฟ']
     };
 
     let transactions = JSON.parse(localStorage.getItem('flowledger_transactions')) || [
-      { id: 1, title: 'เงินเดือนประจำเดือน', type: 'income', category: 'เงินเดือน', amount: 42000, date: '2026-06-01', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
-      { id: 2, title: 'ออกแบบแบรนด์', type: 'income', category: 'ฟรีแลนซ์', amount: 8500, date: '2026-06-08', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
-      { id: 3, title: 'ซูเปอร์มาร์เก็ต', type: 'expense', category: 'อาหาร', amount: 2450, date: '2026-06-05', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
-      { id: 4, title: 'ค่าเดินทาง BTS', type: 'expense', category: 'เดินทาง', amount: 1250, date: '2026-06-07', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
-      { id: 5, title: 'ค่าเช่าคอนโด', type: 'expense', category: 'ที่พัก', amount: 12000, date: '2026-06-01', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
-      { id: 6, title: 'ร้านกาแฟและมื้อกลางวัน', type: 'expense', category: 'อาหาร', amount: 1780, date: '2026-06-12', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
-      { id: 7, title: 'รองเท้าคู่ใหม่', type: 'expense', category: 'ช้อปปิ้ง', amount: 3290, date: '2026-06-14', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } }
+      { id: 1, title: 'เงินเดือนประจำเดือน', type: 'income', category: 'เงินเดือน', amount: 42000, date: '2026-06-01', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } },
+      { id: 2, title: 'ออกแบบแบรนด์', type: 'income', category: 'ฟรีแลนซ์', amount: 8500, date: '2026-06-08', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } },
+      { id: 3, title: 'ซูเปอร์มาร์เก็ต', type: 'expense', category: 'อาหาร', amount: 2450, date: '2026-06-05', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } },
+      { id: 4, title: 'ค่าเดินทาง BTS', type: 'expense', category: 'เดินทาง', amount: 1250, date: '2026-06-07', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } },
+      { id: 5, title: 'ค่าเช่าคอนโด', type: 'expense', category: 'ที่พัก', amount: 12000, date: '2026-06-01', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } },
+      { id: 6, title: 'ร้านกาแฟและมื้อกลางวัน', type: 'expense', category: 'อาหาร', amount: 1780, date: '2026-06-12', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } },
+      { id: 7, title: 'รองเท้าคู่ใหม่', type: 'expense', category: 'ช้อปปิ้ง', amount: 3290, date: '2026-06-14', user: { name: 'ผู้ดูแลเณรต่อ', role: 'ผู้ดูแลระบบสูงสุด (Admin)', email: 'user@example.com', avatar: '' } }
     ];
 
     function saveToLocalStorage() {
@@ -562,7 +571,7 @@
 
     function renderProfile() {
       document.getElementById('sidebarUserName').textContent = currentUser.name;
-      document.getElementById('sidebarUserEmail').textContent = currentUser.email;
+      document.getElementById('sidebarUserRoleBadge').textContent = currentUser.role || 'ผู้ดูแลระบบสูงสุด (Admin)';
       document.getElementById('sidebarUserAvatar').src = getAvatarUrl(currentUser);
 
       const appName = currentUser.appName || 'วัดตึกราชา';
@@ -742,7 +751,7 @@
         const txUser = item.user || currentUser;
         const avatarImg = node.querySelector('.tx-user-avatar');
         avatarImg.src = getAvatarUrl(txUser);
-        avatarImg.title = `เพิ่มโดย: ${txUser.name} (${txUser.email})`;
+        avatarImg.title = `เพิ่มโดย: ${txUser.name} (${txUser.role || 'ผู้ดูแลระบบ'})`;
 
         const amountEl = node.querySelector('.tx-amount');
         amountEl.textContent = (isIncome ? '+ ' : '- ') + formatCurrency(item.amount);
@@ -886,7 +895,7 @@
           type, 
           category, 
           date, 
-          user: { name: currentUser.name, email: currentUser.email, avatar: currentUser.avatar } 
+          user: { name: currentUser.name, role: currentUser.role, email: currentUser.email, avatar: currentUser.avatar } 
         });
       }
 
@@ -935,10 +944,11 @@
       }
     });
 
-    // --- จัดการ Modal หน้าที่ 2: ตั้งค่าโปรไฟล์และรูปภาพโปรไฟล์ ---
+    // --- จัดการ Modal หน้าที่ 2: ตั้งค่าโปรไฟล์และสิทธิ์การเข้าถึง ---
     const profileModal = document.getElementById('profileModal');
     document.getElementById('userProfileCard').addEventListener('click', () => {
       document.getElementById('profileName').value = currentUser.name;
+      document.getElementById('profileRole').value = currentUser.role || 'ผู้ดูแลระบบสูงสุด (Admin)';
       document.getElementById('profileAvatarUrl').value = currentUser.avatar && !currentUser.avatar.startsWith('data:') ? currentUser.avatar : '';
       document.getElementById('profileImageFile').value = '';
       profileModal.classList.remove('hidden');
@@ -956,12 +966,14 @@
     document.getElementById('profileForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const name = document.getElementById('profileName').value.trim();
+      const role = document.getElementById('profileRole').value;
       const avatarUrl = document.getElementById('profileAvatarUrl').value.trim();
       const imageFileInput = document.getElementById('profileImageFile');
 
       if (!name) return;
 
       currentUser.name = name;
+      currentUser.role = role;
       if (avatarUrl) {
         currentUser.avatar = avatarUrl;
       }
