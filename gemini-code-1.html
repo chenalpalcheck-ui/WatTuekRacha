@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">วัดตึกราชา - จัดระเบียบการเงินของคุณ</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #17201a;
+      --muted: #6c756f;
+      --forest: #133f2b;
+      --forest-2: #1d5f42;
+      --mint: #dfeee6;
+      --cream: #f6f4ee;
+      --paper: #fffdf8;
+      --line: #e7e3da;
+      --orange: #d38b57;
+      --red: #b65b55;
+      --gold: #d9b35c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      margin: 0;
+      width: 100%;
+      background: var(--cream);
+    }
+
+    .display-font { font-family: 'Fraunces', serif; }
+
+    .app-shell {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      background:
+        radial-gradient(circle at top right, rgba(223,238,230,.8), transparent 26%),
+        linear-gradient(135deg, #f8f6ef 0%, #f4f1e9 100%);
+    }
+
+    .sidebar {
+      width: 248px;
+      background: #123522;
+      color: white;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+    }
+
+    .main-area {
+      flex: 1;
+      padding: 34px 36px 42px;
+      overflow: hidden;
+    }
+
+    .nav-btn.active {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+    }
+
+    .summary-card {
+      background: var(--paper);
+      border: 1px solid rgba(19,63,43,.08);
+      box-shadow: 0 10px 28px rgba(30, 51, 40, .06);
+    }
+
+    .soft-card {
+      background: rgba(255,253,248,.86);
+      border: 1px solid rgba(19,63,43,.08);
+      box-shadow: 0 10px 24px rgba(30, 51, 40, .05);
+    }
+
+    .focus-ring:focus-visible {
+      outline: 3px solid rgba(29,95,66,.25);
+      outline-offset: 2px;
+    }
+
+    .modal-backdrop {
+      background: rgba(20, 32, 26, .42);
+      backdrop-filter: blur(6px);
+    }
+
+    .fade-in {
+      animation: fadeIn .35s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bar-line {
+      height: 8px;
+      border-radius: 999px;
+      background: #edf0ea;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #1e6b49, #73ad8b);
+    }
+
+    @media (max-width: 1024px) {
+      .app-shell { display: block; }
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 18px 20px;
+      }
+      .sidebar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .sidebar nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        margin-top: 0 !important;
+      }
+      .sidebar-bottom { display: none; }
+      .main-area { padding: 24px 20px 32px; }
+    }
+
+    @media (max-width: 760px) {
+      .desktop-grid-3 { grid-template-columns: 1fr !important; }
+      .desktop-grid-2 { grid-template-columns: 1fr !important; }
+      .responsive-stack { flex-direction: column; align-items: stretch !important; }
+      .transaction-head { display: none; }
+      .transaction-row {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+        padding: 18px 0;
+      }
+      .mobile-label::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        color: #8b948f;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+      }
+      .sidebar-inner { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body style="background: rgb(246, 244, 238);">
+  <div class="app-shell">
+   <aside class="sidebar" style="background: rgb(18, 53, 34);">
+    <div class="sidebar-inner">
+     <div>
+      <!-- โซนคลิกตั้งค่า "ชื่อเว็บและโลโก้เว็บ" ด้านบน -->
+      <div id="brandSettingsCard" class="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-white/10 transition" title="คลิกเพื่อตั้งค่าชื่อเว็บและโลโก้">
+       <div id="brandLogoContainer" class="w-10 h-10 rounded-2xl bg-white/95 text-[#133f2b] flex items-center justify-center font-bold text-lg overflow-hidden shrink-0">
+        <span id="brandLogoText">ว</span>
+        <img id="brandLogoImage" src="" alt="Logo" class="w-full h-full object-cover hidden">
+       </div>
+       <div class="min-w-0">
+        <h2 id="brandTitle" class="font-semibold leading-tight text-white truncate" style="font-size: 20px;">วัดตึกราชา</h2>
+        <p class="text-xs text-[#b7c4bc] mt-0.5 truncate" style="font-size: 13px;">ตั้งค่าชื่อเว็บ/โลโก้</p>
+       </div>
+      </div>
+
+      <nav class="mt-8 space-y-2" aria-label="เมนูหลัก">
+        <button class="nav-btn active focus-ring w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-white transition" data-target="overview-section"> <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span style="font-size: 16px;">ภาพรวม</span> </button> 
+        <button class="nav-btn focus-ring w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-[#dce5df] hover:bg-white/10 transition" data-target="transactions-section"> <i data-lucide="list" class="w-4 h-4"></i> <span style="font-size: 16px;">รายการ</span> </button> 
+        <button class="nav-btn focus-ring w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left text-sm text-[#dce5df] hover:bg-white/10 transition" data-target="categories-section"> <i data-lucide="tags" class="w-4 h-4"></i> <span style="font-size: 16px;">หมวดหมู่</span> </button>
+      </nav>
+     </div>
+     <div class="sidebar-bottom space-y-3">
+      <!-- โซนคลิกตั้งค่า "โปรไฟล์ผู้ดูแลและรูปภาพ" ด้านล่าง -->
+      <div id="userProfileCard" class="flex items-center justify-between rounded-2xl bg-white/10 border border-white/10 p-3 cursor-pointer hover:bg-white/15 transition" title="คลิกเพื่อแก้ไขโปรไฟล์ผู้ดูแล">
+       <div class="flex items-center gap-3 min-w-0">
+        <img id="sidebarUserAvatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover bg-white/20 shrink-0">
+        <div class="min-w-0">
+         <p id="sidebarUserName" class="text-xs font-semibold text-white truncate"></p>
+         <p id="sidebarUserEmail" class="text-[10px] text-[#b7c4bc] truncate"></p>
+        </div>
+       </div>
+       <i data-lucide="settings" class="w-4 h-4 text-white/60 shrink-0"></i>
+      </div>
+
+      <div class="rounded-2xl bg-white/8 border border-white/10 p-4">
+       <div class="flex items-center justify-between mb-3"><span class="text-xs text-[#b7c4bc]" style="font-size: 16px;">สถานะระบบ</span> <span class="w-2.5 h-2.5 bg-[#7dd5a4] rounded-full shadow-[0_0_0_4px_rgba(125,213,164,.12)]"></span>
+       </div>
+       <p class="text-sm font-medium text-white" style="font-size: 16px;">บันทึกข้อมูลถาวร</p>
+       <p class="text-[11px] text-[#b7c4bc] mt-1 leading-relaxed" style="font-size: 16px;">ข้อมูลปลอดภัยภายในเบราว์เซอร์นี้</p>
+      </div>
+     </div>
+    </div>
+   </aside>
+   <main class="main-area">
+    <header class="flex items-start justify-between gap-6 responsive-stack">
+     <div>
+      <p class="text-xs tracking-[.18em] uppercase text-[#7f8a83] font-semibold" style="font-size: 16px;">MONTHLY FINANCE</p>
+      <h1 class="display-font mt-2 text-[#173d2c] leading-tight font-bold" style="font-size: 32px;">ภาพรวมการเงินของคุณ</h1>
+      <p class="text-sm text-[#6f7972] mt-2" style="font-size: 16px;">ติดตามรายรับ รายจ่าย และเงินคงเหลือได้ง่ายในที่เดียว</p>
+     </div>
+     <div class="flex items-center gap-3 flex-wrap">
+      <div class="flex items-center bg-white border border-[#e6e2d9] rounded-2xl px-3 py-2 shadow-sm"><i data-lucide="calendar-days" class="w-4 h-4 text-[#668173]"></i> <label for="monthSelect" class="sr-only">เลือกเดือน</label> 
+        <select id="monthSelect" class="bg-transparent text-sm px-2 outline-none text-[#24352d]"> 
+          <option value="0">มกราคม</option> <option value="1">กุมภาพันธ์</option> <option value="2">มีนาคม</option> <option value="3">เมษายน</option> <option value="4">พฤษภาคม</option> <option value="5">มิถุนายน</option> <option value="6">กรกฎาคม</option> <option value="7">สิงหาคม</option> <option value="8">กันยายน</option> <option value="9">ตุลาคม</option> <option value="10">พฤศจิกายน</option> <option value="11">ธันวาคม</option> 
+        </select> 
+        <label for="yearSelect" class="sr-only">เลือกปี</label> 
+        <select id="yearSelect" class="bg-transparent text-sm pl-1 pr-1 outline-none text-[#24352d]"></select>
+      </div>
+      <button id="addTransactionBtn" class="focus-ring inline-flex items-center gap-2 px-4 py-3 rounded-2xl bg-[#173f2c] text-white text-sm font-medium shadow-[0_10px_24px_rgba(19,63,43,.22)] hover:bg-[#22583d] transition" style="font-size: 16px;">เพิ่มรายการ</button>
+     </div>
+    </header>
+
+    <div class="space-y-10">
+      <!-- ส่วนที่ 1: ภาพรวม -->
+      <section id="overview-section" class="mt-8 pt-2">
+       <div class="grid grid-cols-3 gap-4 desktop-grid-3">
+        <article class="summary-card rounded-[22px] p-5">
+         <div class="flex justify-between items-start">
+          <div>
+           <p class="text-xs tracking-[.12em] uppercase text-[#7b877f] font-semibold" style="font-size: 16px;">รายรับรวม</p>
+           <p id="incomeTotal" class="text-2xl font-semibold mt-3 text-[#1c6042]">฿0</p>
+          </div>
+          <div class="w-10 h-10 rounded-2xl bg-[#e3f1e9] flex items-center justify-center text-[#2d7655]"><i data-lucide="trending-up" class="w-5 h-5"></i>
+          </div>
+         </div>
+         <p class="text-xs text-[#89928c] mt-4" style="font-size: 16px;">รวมรายรับในเดือนที่เลือก</p>
+        </article>
+        <article class="summary-card rounded-[22px] p-5">
+         <div class="flex justify-between items-start">
+          <div>
+           <p class="text-xs tracking-[.12em] uppercase text-[#7b877f] font-semibold" style="font-size: 16px;">รายจ่ายรวม</p>
+           <p id="expenseTotal" class="text-2xl font-semibold mt-3 text-[#b65b55]">฿0</p>
+          </div>
+          <div class="w-10 h-10 rounded-2xl bg-[#f5e7e5] flex items-center justify-center text-[#b65b55]"><i data-lucide="trending-down" class="w-5 h-5"></i>
+          </div>
+         </div>
+         <p class="text-xs text-[#89928c] mt-4" style="font-size: 16px;">รวมรายจ่ายในเดือนที่เลือก</p>
+        </article>
+        <article class="summary-card rounded-[22px] p-5">
+         <div class="flex justify-between items-start">
+          <div>
+           <p class="text-xs tracking-[.12em] uppercase text-[#7b877f] font-semibold" style="font-size: 16px;">คงเหลือสุทธิ</p>
+           <p id="balanceTotal" class="text-2xl font-semibold mt-3 text-[#173f2c]">฿0</p>
+          </div>
+          <div class="w-10 h-10 rounded-2xl bg-[#efe7d4] flex items-center justify-center text-[#9c7740]"><i data-lucide="wallet-cards" class="w-5 h-5"></i>
+          </div>
+         </div>
+         <p class="text-xs text-[#89928c] mt-4" style="font-size: 16px;">รายรับหักรายจ่ายทั้งหมด</p>
+        </article>
+       </div>
+
+       <div id="reports" class="grid grid-cols-[1.45fr_.8fr] gap-4 mt-4 desktop-grid-2">
+        <section class="soft-card rounded-[24px] p-6">
+         <div class="flex items-start justify-between gap-4 mb-6">
+          <div>
+           <h2 class="font-semibold text-[#21372d]" style="font-size: 24px;">สัดส่วนรายจ่ายตามหมวด</h2>
+           <p class="text-sm text-[#7b867f] mt-1" style="font-size: 16px;">ดูว่าค่าใช้จ่ายของคุณกระจายไปที่ใดบ้าง</p>
+          </div><span class="px-3 py-1.5 rounded-full bg-[#edf3ee] text-[#2e6d4e] text-xs font-medium" style="font-size: 16px;">รายจ่าย</span>
+         </div>
+         <div class="flex items-center justify-between gap-8 responsive-stack">
+          <div class="relative w-[220px] h-[220px] shrink-0 mx-auto">
+           <canvas id="expenseChart" width="220" height="220"></canvas>
+           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <p class="text-[11px] tracking-[.14em] uppercase text-[#869089]" style="font-size: 16px;">รวมรายจ่าย</p>
+            <p id="chartCenterAmount" class="text-xl font-semibold text-[#173f2c] mt-1">฿0</p>
+           </div>
+          </div>
+          <div id="legendList" class="flex-1 space-y-3 w-full"></div>
+         </div>
+        </section>
+        <section class="soft-card rounded-[24px] p-6">
+         <div class="flex items-start justify-between">
+          <div>
+           <h2 class="font-semibold text-[#21372d]" style="font-size: 24px;">สุขภาพการเงิน</h2>
+           <p class="text-sm text-[#7b867f] mt-1" style="font-size: 16px;">ภาพรวมพฤติกรรมการใช้เงิน</p>
+          </div>
+          <div class="w-9 h-9 rounded-2xl bg-[#e7efe9] flex items-center justify-center text-[#2b694a]"><i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
+         </div>
+         <div class="mt-8">
+          <p class="text-xs uppercase tracking-[.14em] text-[#7d8982] font-semibold" style="font-size: 16px;">อัตราการออม</p>
+          <p id="savingRate" class="display-font text-4xl text-[#17412e] mt-2">0%</p>
+          <div class="bar-line mt-4">
+           <div id="savingBar" class="bar-fill" style="width: 0%"></div>
+          </div>
+          <p id="savingHint" class="text-sm text-[#708078] mt-4 leading-relaxed"></p>
+         </div>
+         <div class="mt-8 pt-5 border-t border-[#ebe6dc]">
+          <div class="flex justify-between text-sm"><span class="text-[#7f8983]" style="font-size: 16px;">หมวดที่ใช้มากที่สุด</span> <span id="topCategory" class="font-medium text-[#243b2f]">-</span>
+          </div>
+          <div class="flex justify-between text-sm mt-3"><span class="text-[#7f8983]" style="font-size: 16px;">จำนวนรายการ</span> <span id="transactionCount" class="font-medium text-[#243b2f]">0</span>
+          </div>
+         </div>
+        </section>
+       </div>
+      </section>
+
+      <!-- ส่วนที่ 2: รายการล่าสุด -->
+      <section id="transactions-section" class="pt-2">
+       <div class="flex items-center justify-between gap-4 mb-4 responsive-stack">
+        <div>
+         <h2 class="font-semibold text-[#22362d]" style="font-size: 24px;">รายการล่าสุด</h2>
+         <p class="text-sm text-[#7d8781] mt-1" style="font-size: 16px;">ตรวจสอบและจัดการรายการทางการเงินของคุณ</p>
+        </div><button id="quickAddBtn" class="focus-ring inline-flex items-center gap-2 rounded-xl border border-[#d9ded7] bg-white px-3.5 py-2.5 text-sm text-[#28553f] hover:bg-[#f7faf8] transition" style="font-size: 16px;">เพิ่มรายการ</button>
+       </div>
+       <div class="soft-card rounded-[22px] px-5 py-2 overflow-hidden">
+        <div class="transaction-head grid grid-cols-[1.4fr_.9fr_.8fr_.9fr_.6fr] gap-4 py-3 border-b border-[#ebe7dd] text-[11px] uppercase tracking-[.14em] text-[#87928b] font-semibold"><span style="font-size: 16px;">รายการ</span> <span style="font-size: 16px;">หมวดหมู่</span> <span style="font-size: 16px;">วันที่</span> <span style="font-size: 16px;">จำนวนเงิน</span> <span class="text-right" style="font-size: 16px;">จัดการ</span>
+        </div>
+        <div id="transactionList"></div>
+        <div id="emptyState" class="hidden py-10 text-center">
+         <div class="w-12 h-12 rounded-2xl bg-[#edf2ed] flex items-center justify-center mx-auto text-[#71937d]"><i data-lucide="inbox" class="w-5 h-5"></i>
+         </div>
+         <p class="text-sm font-medium text-[#44534a] mt-3" style="font-size: 16px;">ยังไม่มีรายการในเดือนนี้</p>
+         <p class="text-xs text-[#8b948f] mt-1" style="font-size: 16px;">เริ่มเพิ่มรายการแรกเพื่อดูภาพรวมการเงิน</p>
+        </div>
+       </div>
+      </section>
+
+      <!-- ส่วนที่ 3: หมวดหมู่ -->
+      <section id="categories-section" class="pt-2">
+       <div class="flex items-center justify-between gap-4 mb-4 responsive-stack">
+        <div>
+         <h2 class="font-semibold text-[#22362d]" style="font-size: 24px;">จัดการหมวดหมู่</h2>
+         <p class="text-sm text-[#7d8781] mt-1" style="font-size: 16px;">ปรับกลุ่มรายรับและรายจ่ายให้ตรงกับวิถีการเงินของคุณ</p>
+        </div><button id="addCategoryBtn" class="focus-ring inline-flex items-center gap-2 rounded-xl border border-[#d9ded7] bg-white px-3.5 py-2.5 text-sm text-[#28553f] hover:bg-[#f7faf8] transition" style="font-size: 16px;">เพิ่มหมวดหมู่</button>
+       </div>
+       <div class="grid grid-cols-2 gap-4 desktop-grid-2">
+        <article class="soft-card rounded-[22px] p-5">
+         <div class="flex items-center justify-between">
+          <div>
+           <h3 class="font-semibold text-[#244232]" style="font-size: 19px;">หมวดรายรับ</h3>
+           <p class="text-xs text-[#87918b] mt-1" style="font-size: 16px;">กลุ่มเงินที่ไหลเข้าของคุณ</p>
+          </div>
+          <div class="w-9 h-9 rounded-2xl bg-[#e4f1e8] text-[#2e7754] flex items-center justify-center"><i data-lucide="arrow-down-left" class="w-4 h-4"></i>
+          </div>
+         </div>
+         <div id="incomeCategoryList" class="flex flex-wrap gap-2 mt-5"></div>
+        </article>
+        <article class="soft-card rounded-[22px] p-5">
+         <div class="flex items-center justify-between">
+          <div>
+           <h3 class="font-semibold text-[#4c302e]" style="font-size: 19px;">หมวดรายจ่าย</h3>
+           <p class="text-xs text-[#87918b] mt-1" style="font-size: 16px;">กลุ่มค่าใช้จ่ายที่ติดตามเป็นประจำ</p>
+          </div>
+          <div class="w-9 h-9 rounded-2xl bg-[#f5e5e3] text-[#b15d56] flex items-center justify-center"><i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+          </div>
+         </div>
+         <div id="expenseCategoryList" class="flex flex-wrap gap-2 mt-5"></div>
+        </article>
+       </div>
+      </section>
+    </div>
+   </main>
+  </div>
+
+  <template id="transactionTemplate">
+   <div class="transaction-row grid grid-cols-[1.4fr_.9fr_.8fr_.9fr_.6fr] gap-4 items-center py-4 border-b border-[#efebe3] last:border-b-0">
+    <div class="mobile-label" data-label="รายการ">
+     <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+       <div class="tx-icon w-9 h-9 rounded-2xl flex items-center justify-center shrink-0"></div>
+       <div class="min-w-0">
+        <p class="tx-title text-sm font-medium text-[#263a30] truncate"></p>
+        <p class="tx-type text-xs text-[#8a958e] mt-0.5"></p>
+       </div>
+      </div>
+      <!-- รูปโปรไฟล์ผู้เพิ่มรายการด้านหลังชื่อรายการ -->
+      <img class="tx-user-avatar w-7 h-7 rounded-full object-cover border border-[#e0e0e0] shrink-0" title="" src="" alt="User Avatar">
+     </div>
+    </div>
+    <div class="mobile-label" data-label="หมวดหมู่"><span class="tx-category text-sm text-[#5f6c64]"></span>
+    </div>
+    <div class="mobile-label" data-label="วันที่"><span class="tx-date text-sm text-[#5f6c64]"></span>
+    </div>
+    <div class="mobile-label" data-label="จำนวนเงิน"><span class="tx-amount text-sm font-semibold"></span>
+    </div>
+    <div class="flex justify-end gap-1">
+      <button class="edit-btn focus-ring w-8 h-8 rounded-xl hover:bg-[#eef4ef] text-[#5f7f6b] flex items-center justify-center transition" aria-label="แก้ไขรายการ"> <i data-lucide="pencil" class="w-4 h-4"></i> </button> 
+      <button class="delete-btn focus-ring w-8 h-8 rounded-xl hover:bg-[#f6e9e7] text-[#b46a64] flex items-center justify-center transition" aria-label="ลบรายการ"> <i data-lucide="trash-2" class="w-4 h-4"></i> </button>
+    </div>
+   </div>
+  </template>
+
+  <template id="legendTemplate">
+   <div class="flex items-center gap-3"><span class="legend-dot w-2.5 h-2.5 rounded-full shrink-0"></span>
+    <div class="flex-1 min-w-0">
+     <div class="flex items-center justify-between gap-3"><span class="legend-name text-sm text-[#33473c] truncate"></span> <span class="legend-value text-sm font-medium text-[#31473a]"></span>
+     </div>
+     <div class="bar-line mt-1.5 h-[5px]">
+      <div class="legend-bar h-full rounded-full"></div>
+     </div>
+    </div>
+   </div>
+  </template>
+
+  <template id="categoryChipTemplate"><span class="category-chip inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium"></span>
+  </template>
+
+  <!-- Modal สำหรับเพิ่ม/แก้ไขรายการ -->
+  <div id="transactionModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+   <div class="w-full max-w-[520px] rounded-[24px] bg-[#fffdf8] p-6 shadow-2xl fade-in">
+    <div class="flex items-start justify-between">
+     <div>
+      <h2 id="transactionModalTitle" class="font-semibold text-[#22392e]" style="font-size: 24px;">เพิ่มรายการใหม่</h2>
+      <p class="text-sm text-[#7c8780] mt-1" style="font-size: 16px;">บันทึกรายรับหรือรายจ่ายของคุณในไม่กี่ขั้นตอน</p>
+     </div><button id="closeTransactionModal" class="focus-ring w-9 h-9 rounded-xl hover:bg-[#f0eee9] flex items-center justify-center text-[#718078]" aria-label="ปิด"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+    </div>
+    <form id="transactionForm" class="mt-6 space-y-4">
+     <div><label for="transactionType" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ประเภทรายการ</label>
+      <div class="grid grid-cols-2 gap-2"><button type="button" id="incomeTypeBtn" class="type-choice focus-ring rounded-xl border border-[#dbe6dd] bg-[#edf6ef] px-3 py-2.5 text-sm text-[#245e40] font-medium">รายรับ</button> <button type="button" id="expenseTypeBtn" class="type-choice focus-ring rounded-xl border border-[#ead9d6] bg-white px-3 py-2.5 text-sm text-[#9c5b56] font-medium">รายจ่าย</button>
+      </div><input type="hidden" id="transactionType" value="income">
+     </div>
+     <div><label for="transactionTitle" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ชื่อรายการ</label> <input id="transactionTitle" type="text" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     </div>
+     <div class="grid grid-cols-2 gap-3">
+      <div><label for="transactionAmount" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">จำนวนเงิน</label> <input id="transactionAmount" type="number" min="0" step="1" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+      </div>
+      <div><label for="transactionDate" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">วันที่</label> <input id="transactionDate" type="date" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+      </div>
+     </div>
+     <div><label for="transactionCategory" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">หมวดหมู่</label> <select id="transactionCategory" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none"></select>
+     </div>
+     <div class="flex justify-end gap-2 pt-2">
+      <button type="button" id="cancelTransactionBtn" class="focus-ring rounded-xl border border-[#dcd8cf] bg-white px-4 py-2.5 text-sm text-[#59655f]" style="font-size: 16px;">ยกเลิก</button> 
+      <button type="submit" class="focus-ring rounded-xl bg-[#173f2c] px-4 py-2.5 text-sm text-white font-medium hover:bg-[#22583d]" style="font-size: 16px;">บันทึกรายการ</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- Modal สำหรับเพิ่มหมวดหมู่ -->
+  <div id="categoryModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+   <div class="w-full max-w-[460px] rounded-[24px] bg-[#fffdf8] p-6 shadow-2xl fade-in">
+    <div class="flex items-start justify-between">
+     <div>
+      <h2 class="font-semibold text-[#22392e]" style="font-size: 24px;">เพิ่มหมวดหมู่ใหม่</h2>
+      <p class="text-sm text-[#7c8780] mt-1" style="font-size: 16px;">สร้างกลุ่มที่เหมาะกับรูปแบบการใช้เงินของคุณ</p>
+     </div><button id="closeCategoryModal" class="focus-ring w-9 h-9 rounded-xl hover:bg-[#f0eee9] flex items-center justify-center text-[#718078]" aria-label="ปิด"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+    </div>
+    <form id="categoryForm" class="mt-6 space-y-4">
+     <div><label for="categoryType" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ประเภทหมวดหมู่</label> <select id="categoryType" class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none"> <option value="income">รายรับ</option> <option value="expense">รายจ่าย</option> </select>
+     </div>
+     <div><label for="categoryName" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ชื่อหมวดหมู่</label> <input id="categoryName" type="text" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     </div>
+     <div class="flex justify-end gap-2 pt-2">
+      <button type="button" id="cancelCategoryBtn" class="focus-ring rounded-xl border border-[#dcd8cf] bg-white px-4 py-2.5 text-sm text-[#59655f]" style="font-size: 16px;">ยกเลิก</button> 
+      <button type="submit" class="focus-ring rounded-xl bg-[#173f2c] px-4 py-2.5 text-sm text-white font-medium hover:bg-[#22583d]" style="font-size: 16px;">บันทึกหมวดหมู่</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- หน้าต่างที่ 1: ตั้งค่าชื่อเว็บและอัปโหลดโลโก้เว็บ -->
+  <div id="brandModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+   <div class="w-full max-w-[420px] rounded-[24px] bg-[#fffdf8] p-6 shadow-2xl fade-in">
+    <div class="flex items-start justify-between">
+     <div>
+      <h2 class="font-semibold text-[#22392e]" style="font-size: 24px;">ตั้งค่าชื่อเว็บและโลโก้</h2>
+      <p class="text-sm text-[#7c8780] mt-1" style="font-size: 16px;">กำหนดชื่อเว็บไซต์และอัปโหลดโลโก้เว็บของคุณ</p>
+     </div><button id="closeBrandModal" class="focus-ring w-9 h-9 rounded-xl hover:bg-[#f0eee9] flex items-center justify-center text-[#718078]" aria-label="ปิด"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+    </div>
+    <form id="brandForm" class="mt-6 space-y-4">
+     <div><label for="profileAppName" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ชื่อเว็บ (แทนที่ FlowLedger)</label> <input id="profileAppName" type="text" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     </div>
+     <div>
+      <label class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">อัปโหลดโลโก้เว็บ (แทนตัว F)</label> 
+      <input id="brandLogoFile" type="file" accept="image/*" class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-2.5 text-sm outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#173f2c] file:text-white hover:file:bg-[#22583d]">
+     </div>
+     <div class="flex justify-end gap-2 pt-2">
+      <button type="button" id="cancelBrandBtn" class="focus-ring rounded-xl border border-[#dcd8cf] bg-white px-4 py-2.5 text-sm text-[#59655f]" style="font-size: 16px;">ยกเลิก</button> 
+      <button type="submit" class="focus-ring rounded-xl bg-[#173f2c] px-4 py-2.5 text-sm text-white font-medium hover:bg-[#22583d]" style="font-size: 16px;">บันทึกข้อมูลเว็บ</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <!-- หน้าต่างที่ 2: ตั้งค่าโปรไฟล์ผู้ดูแลและอัปโหลดรูปโปรไฟล์ -->
+  <div id="profileModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+   <div class="w-full max-w-[420px] rounded-[24px] bg-[#fffdf8] p-6 shadow-2xl fade-in">
+    <div class="flex items-start justify-between">
+     <div>
+      <h2 class="font-semibold text-[#22392e]" style="font-size: 24px;">ตั้งค่าโปรไฟล์ผู้ดูแล</h2>
+      <p class="text-sm text-[#7c8780] mt-1" style="font-size: 16px;">แก้ไขชื่อผู้ดูแลและอัปโหลดรูปภาพโปรไฟล์ของคุณ</p>
+     </div><button id="closeProfileModal" class="focus-ring w-9 h-9 rounded-xl hover:bg-[#f0eee9] flex items-center justify-center text-[#718078]" aria-label="ปิด"> <i data-lucide="x" class="w-4 h-4"></i> </button>
+    </div>
+    <form id="profileForm" class="mt-6 space-y-4">
+     <div><label for="profileName" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">ชื่อผู้ดูแล (user@example.com)</label> <input id="profileName" type="text" required class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     </div>
+     <div>
+      <label class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">อัปโหลดรูปภาพโปรไฟล์จากเครื่อง</label> 
+      <input id="profileImageFile" type="file" accept="image/*" class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-2.5 text-sm outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#173f2c] file:text-white hover:file:bg-[#22583d]">
+     </div>
+     <div><label for="profileAvatarUrl" class="block text-sm font-medium text-[#3a4d42] mb-2" style="font-size: 16px;">หรือใส่ลิงก์รูปภาพโปรไฟล์ (URL)</label> <input id="profileAvatarUrl" type="url" placeholder="https://example.com/avatar.jpg" class="focus-ring w-full rounded-xl border border-[#ddd9d0] bg-white px-3.5 py-3 text-sm outline-none">
+     </div>
+     <div class="flex justify-end gap-2 pt-2">
+      <button type="button" id="cancelProfileBtn" class="focus-ring rounded-xl border border-[#dcd8cf] bg-white px-4 py-2.5 text-sm text-[#59655f]" style="font-size: 16px;">ยกเลิก</button> 
+      <button type="submit" class="focus-ring rounded-xl bg-[#173f2c] px-4 py-2.5 text-sm text-white font-medium hover:bg-[#22583d]" style="font-size: 16px;">บันทึกโปรไฟล์</button>
+     </div>
+    </form>
+   </div>
+  </div>
+
+  <script>
+    const monthsThai = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    const categoryColors = {
+      'เงินเดือน': '#3d8a63',
+      'ฟรีแลนซ์': '#6ca17b',
+      'โบนัส': '#b5bf6c',
+      'อาหาร': '#d38b57',
+      'เดินทาง': '#6d8eb8',
+      'ช้อปปิ้ง': '#c07175',
+      'ที่พัก': '#8a7ab8',
+      'สุขภาพ': '#6ba99c',
+      'บันเทิง': '#d6b15a'
+    };
+
+    let currentUser = JSON.parse(localStorage.getItem('flowledger_user')) || {
+      name: 'ผู้ดูแลเณรต่อ',
+      email: 'user@example.com',
+      avatar: '',
+      appName: 'วัดตึกราชา',
+      appLogo: ''
+    };
+
+    let categories = JSON.parse(localStorage.getItem('flowledger_categories')) || {
+      income: ['เงินเดือน', 'ฟรีแลนซ์', 'โบนัส'],
+      expense: ['อาหาร', 'เดินทาง', 'ช้อปปิ้ง', 'ที่พัก', 'สุขภาพ', 'บันเทิง']
+    };
+
+    let transactions = JSON.parse(localStorage.getItem('flowledger_transactions')) || [
+      { id: 1, title: 'เงินเดือนประจำเดือน', type: 'income', category: 'เงินเดือน', amount: 42000, date: '2026-06-01', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
+      { id: 2, title: 'ออกแบบแบรนด์', type: 'income', category: 'ฟรีแลนซ์', amount: 8500, date: '2026-06-08', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
+      { id: 3, title: 'ซูเปอร์มาร์เก็ต', type: 'expense', category: 'อาหาร', amount: 2450, date: '2026-06-05', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
+      { id: 4, title: 'ค่าเดินทาง BTS', type: 'expense', category: 'เดินทาง', amount: 1250, date: '2026-06-07', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
+      { id: 5, title: 'ค่าเช่าคอนโด', type: 'expense', category: 'ที่พัก', amount: 12000, date: '2026-06-01', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
+      { id: 6, title: 'ร้านกาแฟและมื้อกลางวัน', type: 'expense', category: 'อาหาร', amount: 1780, date: '2026-06-12', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } },
+      { id: 7, title: 'รองเท้าคู่ใหม่', type: 'expense', category: 'ช้อปปิ้ง', amount: 3290, date: '2026-06-14', user: { name: 'ผู้ดูแลเณรต่อ', email: 'user@example.com', avatar: '' } }
+    ];
+
+    function saveToLocalStorage() {
+      localStorage.setItem('flowledger_categories', JSON.stringify(categories));
+      localStorage.setItem('flowledger_transactions', JSON.stringify(transactions));
+      localStorage.setItem('flowledger_user', JSON.stringify(currentUser));
+    }
+
+    function getAvatarUrl(userObj) {
+      if (userObj && userObj.avatar && userObj.avatar.trim() !== '') {
+        return userObj.avatar.trim();
+      }
+      const email = (userObj && userObj.email ? userObj.email : currentUser.email || '').trim().toLowerCase();
+      return `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(email || 'user@example.com')}`;
+    }
+
+    function renderProfile() {
+      document.getElementById('sidebarUserName').textContent = currentUser.name;
+      document.getElementById('sidebarUserEmail').textContent = currentUser.email;
+      document.getElementById('sidebarUserAvatar').src = getAvatarUrl(currentUser);
+
+      const appName = currentUser.appName || 'วัดตึกราชา';
+      document.getElementById('brandTitle').textContent = appName;
+      document.getElementById('pageTitle').textContent = `${appName} - จัดระเบียบการเงินของคุณ`;
+
+      const logoImg = document.getElementById('brandLogoImage');
+      const logoText = document.getElementById('brandLogoText');
+      if (currentUser.appLogo && currentUser.appLogo.trim() !== '') {
+        logoImg.src = currentUser.appLogo.trim();
+        logoImg.classList.remove('hidden');
+        logoText.classList.add('hidden');
+      } else {
+        logoImg.classList.add('hidden');
+        logoText.classList.remove('hidden');
+        logoText.textContent = appName.charAt(0).toUpperCase();
+      }
+    }
+
+    let editingId = null;
+    const now = new Date();
+    const currentYear = 2026;
+
+    const monthSelect = document.getElementById('monthSelect');
+    const yearSelect = document.getElementById('yearSelect');
+    monthSelect.value = '5';
+
+    for (let year = currentYear; year >= currentYear - 4; year--) {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year + 543;
+      yearSelect.appendChild(option);
+    }
+    yearSelect.value = currentYear;
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(value);
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return `${d.getDate()} ${monthsThai[d.getMonth()]} ${d.getFullYear() + 543}`;
+    }
+
+    function getVisibleTransactions() {
+      const selectedMonth = Number(monthSelect.value);
+      const selectedYear = Number(yearSelect.value);
+      return transactions
+        .filter(item => {
+          const d = new Date(item.date);
+          return d.getMonth() === selectedMonth && d.getFullYear() === selectedYear;
+        })
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    function renderAll() {
+      renderProfile();
+      const visible = getVisibleTransactions();
+      renderSummary(visible);
+      renderChart(visible);
+      renderTransactions(visible);
+      renderCategories();
+    }
+
+    function renderSummary(items) {
+      const income = items.filter(i => i.type === 'income').reduce((sum, i) => sum + i.amount, 0);
+      const expense = items.filter(i => i.type === 'expense').reduce((sum, i) => sum + i.amount, 0);
+      const balance = income - expense;
+      document.getElementById('incomeTotal').textContent = formatCurrency(income);
+      document.getElementById('expenseTotal').textContent = formatCurrency(expense);
+      document.getElementById('balanceTotal').textContent = formatCurrency(balance);
+      document.getElementById('chartCenterAmount').textContent = formatCurrency(expense);
+      document.getElementById('transactionCount').textContent = items.length + ' รายการ';
+
+      const savingRate = income > 0 ? Math.max(0, Math.round((balance / income) * 100)) : 0;
+      document.getElementById('savingRate').textContent = savingRate + '%';
+      document.getElementById('savingBar').style.width = Math.min(savingRate, 100) + '%';
+      document.getElementById('savingHint').textContent = savingRate >= 30
+        ? 'ยอดออมของคุณอยู่ในระดับดีมาก รักษาจังหวะการใช้จ่ายแบบนี้ต่อไป'
+        : savingRate >= 10
+          ? 'คุณยังมีพื้นที่ให้เพิ่มยอดออมได้อีกเล็กน้อยในเดือนนี้'
+          : 'ลองทบทวนค่าใช้จ่ายหลักเพื่อเพิ่มพื้นที่ให้เงินออมมากขึ้น';
+
+      const expenseGroups = getExpenseGroups(items);
+      const top = expenseGroups.sort((a, b) => b.value - a.value)[0];
+      document.getElementById('topCategory').textContent = top ? top.name : '-';
+    }
+
+    function getExpenseGroups(items) {
+      const map = {};
+      items.filter(i => i.type === 'expense').forEach(item => {
+        map[item.category] = (map[item.category] || 0) + item.amount;
+      });
+      return Object.entries(map).map(([name, value]) => ({ name, value }));
+    }
+
+    function renderChart(items) {
+      const canvas = document.getElementById('expenseChart');
+      const ctx = canvas.getContext('2d');
+      const groups = getExpenseGroups(items);
+      const total = groups.reduce((sum, g) => sum + g.value, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (total === 0) {
+        ctx.beginPath();
+        ctx.arc(110, 110, 82, 0, Math.PI * 2);
+        ctx.lineWidth = 28;
+        ctx.strokeStyle = '#e5ebe6';
+        ctx.stroke();
+      } else {
+        let start = -Math.PI / 2;
+        groups.forEach(group => {
+          const slice = (group.value / total) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.arc(110, 110, 82, start, start + slice);
+          ctx.lineWidth = 28;
+          ctx.strokeStyle = categoryColors[group.name] || '#8aa596';
+          ctx.lineCap = 'butt';
+          ctx.stroke();
+          start += slice;
+        });
+      }
+
+      const legend = document.getElementById('legendList');
+      legend.innerHTML = '';
+      const template = document.getElementById('legendTemplate');
+
+      if (groups.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'text-sm text-[#8a958f]';
+        empty.textContent = 'ยังไม่มีข้อมูลรายจ่ายในเดือนนี้';
+        legend.appendChild(empty);
+        return;
+      }
+
+      groups.sort((a, b) => b.value - a.value).forEach(group => {
+        const node = template.content.cloneNode(true);
+        const color = categoryColors[group.name] || '#8aa596';
+        node.querySelector('.legend-dot').style.background = color;
+        node.querySelector('.legend-name').textContent = group.name;
+        node.querySelector('.legend-value').textContent = formatCurrency(group.value);
+        node.querySelector('.legend-bar').style.background = color;
+        node.querySelector('.legend-bar').style.width = ((group.value / total) * 100) + '%';
+        legend.appendChild(node);
+      });
+    }
+
+    function renderTransactions(items) {
+      const list = document.getElementById('transactionList');
+      const emptyState = document.getElementById('emptyState');
+      list.innerHTML = '';
+
+      if (items.length === 0) {
+        emptyState.classList.remove('hidden');
+        lucide.createIcons();
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      const template = document.getElementById('transactionTemplate');
+
+      items.forEach(item => {
+        const node = template.content.cloneNode(true);
+        const row = node.querySelector('.transaction-row');
+        row.dataset.id = item.id;
+        const icon = node.querySelector('.tx-icon');
+        const isIncome = item.type === 'income';
+
+        icon.className += isIncome ? ' bg-[#e7f2eb] text-[#2c7653]' : ' bg-[#f5e8e6] text-[#b2615c]';
+        icon.innerHTML = `<i data-lucide="${isIncome ? 'arrow-down-left' : 'arrow-up-right'}" class="w-4 h-4"></i>`;
+
+        node.querySelector('.tx-title').textContent = item.title;
+        node.querySelector('.tx-type').textContent = isIncome ? 'รายรับ' : 'รายจ่าย';
+        node.querySelector('.tx-category').textContent = item.category;
+        node.querySelector('.tx-date').textContent = formatDate(item.date);
+        
+        const txUser = item.user || currentUser;
+        const avatarImg = node.querySelector('.tx-user-avatar');
+        avatarImg.src = getAvatarUrl(txUser);
+        avatarImg.title = `เพิ่มโดย: ${txUser.name} (${txUser.email})`;
+
+        const amountEl = node.querySelector('.tx-amount');
+        amountEl.textContent = (isIncome ? '+ ' : '- ') + formatCurrency(item.amount);
+        amountEl.className += isIncome ? ' text-[#2d7452]' : ' text-[#b45d57]';
+
+        node.querySelector('.edit-btn').addEventListener('click', () => openTransactionModal(item));
+        node.querySelector('.delete-btn').addEventListener('click', (e) => confirmDelete(e.currentTarget, item.id));
+        list.appendChild(node);
+      });
+
+      lucide.createIcons();
+    }
+
+    function confirmDelete(button, id) {
+      if (button.dataset.confirming === 'true') {
+        transactions = transactions.filter(item => item.id !== id);
+        saveToLocalStorage();
+        renderAll();
+        return;
+      }
+      button.dataset.confirming = 'true';
+      button.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+      button.classList.add('bg-[#f5e3e1]');
+      setTimeout(() => {
+        if (button.isConnected) {
+          button.dataset.confirming = 'false';
+          button.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+          button.classList.remove('bg-[#f5e3e1]');
+          lucide.createIcons();
+        }
+      }, 2500);
+      lucide.createIcons();
+    }
+
+    function renderCategories() {
+      renderCategoryList('incomeCategoryList', categories.income, 'income');
+      renderCategoryList('expenseCategoryList', categories.expense, 'expense');
+    }
+
+    function renderCategoryList(containerId, list, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const template = document.getElementById('categoryChipTemplate');
+      list.forEach(name => {
+        const node = template.content.cloneNode(true);
+        const chip = node.querySelector('.category-chip');
+        chip.textContent = name;
+        chip.className += type === 'income'
+          ? ' bg-[#ebf4ee] text-[#2e6e4f]'
+          : ' bg-[#f7ecea] text-[#a55b56]';
+        container.appendChild(node);
+      });
+    }
+
+    function updateCategoryOptions(type) {
+      const select = document.getElementById('transactionCategory');
+      select.innerHTML = '';
+      categories[type].forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+      });
+    }
+
+    function openTransactionModal(item = null) {
+      editingId = item ? item.id : null;
+      const modal = document.getElementById('transactionModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      const type = item ? item.type : 'income';
+      document.getElementById('transactionType').value = type;
+      updateTypeButtons(type);
+      updateCategoryOptions(type);
+
+      document.getElementById('transactionTitle').value = item ? item.title : '';
+      document.getElementById('transactionAmount').value = item ? item.amount : '';
+      document.getElementById('transactionDate').value = item ? item.date : `${yearSelect.value}-${String(Number(monthSelect.value) + 1).padStart(2, '0')}-01`;
+      if (item) document.getElementById('transactionCategory').value = item.category;
+    }
+
+    function closeTransactionModal() {
+      document.getElementById('transactionModal').classList.add('hidden');
+      document.getElementById('transactionModal').classList.remove('flex');
+      document.getElementById('transactionForm').reset();
+      editingId = null;
+    }
+
+    function updateTypeButtons(type) {
+      const incomeBtn = document.getElementById('incomeTypeBtn');
+      const expenseBtn = document.getElementById('expenseTypeBtn');
+      if (type === 'income') {
+        incomeBtn.className = 'type-choice focus-ring rounded-xl border border-[#dbe6dd] bg-[#edf6ef] px-3 py-2.5 text-sm text-[#245e40] font-medium';
+        expenseBtn.className = 'type-choice focus-ring rounded-xl border border-[#ead9d6] bg-white px-3 py-2.5 text-sm text-[#9c5b56] font-medium';
+      } else {
+        incomeBtn.className = 'type-choice focus-ring rounded-xl border border-[#dbe6dd] bg-white px-3 py-2.5 text-sm text-[#245e40] font-medium';
+        expenseBtn.className = 'type-choice focus-ring rounded-xl border border-[#ead9d6] bg-[#f8eded] px-3 py-2.5 text-sm text-[#9c5b56] font-medium';
+      }
+    }
+
+    document.getElementById('incomeTypeBtn').addEventListener('click', () => {
+      document.getElementById('transactionType').value = 'income';
+      updateTypeButtons('income');
+      updateCategoryOptions('income');
+    });
+
+    document.getElementById('expenseTypeBtn').addEventListener('click', () => {
+      document.getElementById('transactionType').value = 'expense';
+      updateTypeButtons('expense');
+      updateCategoryOptions('expense');
+    });
+
+    document.getElementById('transactionForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('transactionTitle').value.trim();
+      const amount = Number(document.getElementById('transactionAmount').value);
+      const type = document.getElementById('transactionType').value;
+      const category = document.getElementById('transactionCategory').value;
+      const date = document.getElementById('transactionDate').value;
+
+      if (!title || !amount || !date) return;
+
+      if (editingId) {
+        const idx = transactions.findIndex(item => item.id === editingId);
+        if (idx >= 0) {
+          transactions[idx] = { 
+            ...transactions[idx], 
+            title, 
+            amount, 
+            type, 
+            category, 
+            date 
+          };
+        }
+      } else {
+        transactions.push({ 
+          id: Date.now(), 
+          title, 
+          amount, 
+          type, 
+          category, 
+          date, 
+          user: { name: currentUser.name, email: currentUser.email, avatar: currentUser.avatar } 
+        });
+      }
+
+      saveToLocalStorage();
+      closeTransactionModal();
+      renderAll();
+    });
+
+    // --- จัดการ Modal หน้าที่ 1: ตั้งค่าชื่อเว็บและโลโก้ ---
+    const brandModal = document.getElementById('brandModal');
+    document.getElementById('brandSettingsCard').addEventListener('click', () => {
+      document.getElementById('profileAppName').value = currentUser.appName || 'วัดตึกราชา';
+      document.getElementById('brandLogoFile').value = '';
+      brandModal.classList.remove('hidden');
+      brandModal.classList.add('flex');
+    });
+
+    function closeBrandModalFunc() {
+      brandModal.classList.add('hidden');
+      brandModal.classList.remove('flex');
+    }
+
+    document.getElementById('closeBrandModal').addEventListener('click', closeBrandModalFunc);
+    document.getElementById('cancelBrandBtn').addEventListener('click', closeBrandModalFunc);
+
+    document.getElementById('brandForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const appName = document.getElementById('profileAppName').value.trim() || 'วัดตึกราชา';
+      const logoFileInput = document.getElementById('brandLogoFile');
+
+      currentUser.appName = appName;
+
+      if (logoFileInput.files && logoFileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          currentUser.appLogo = evt.target.result;
+          saveToLocalStorage();
+          closeBrandModalFunc();
+          renderAll();
+        };
+        reader.readAsDataURL(logoFileInput.files[0]);
+      } else {
+        saveToLocalStorage();
+        closeBrandModalFunc();
+        renderAll();
+      }
+    });
+
+    // --- จัดการ Modal หน้าที่ 2: ตั้งค่าโปรไฟล์และรูปภาพโปรไฟล์ ---
+    const profileModal = document.getElementById('profileModal');
+    document.getElementById('userProfileCard').addEventListener('click', () => {
+      document.getElementById('profileName').value = currentUser.name;
+      document.getElementById('profileAvatarUrl').value = currentUser.avatar && !currentUser.avatar.startsWith('data:') ? currentUser.avatar : '';
+      document.getElementById('profileImageFile').value = '';
+      profileModal.classList.remove('hidden');
+      profileModal.classList.add('flex');
+    });
+
+    function closeProfileModalFunc() {
+      profileModal.classList.add('hidden');
+      profileModal.classList.remove('flex');
+    }
+
+    document.getElementById('closeProfileModal').addEventListener('click', closeProfileModalFunc);
+    document.getElementById('cancelProfileBtn').addEventListener('click', closeProfileModalFunc);
+
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('profileName').value.trim();
+      const avatarUrl = document.getElementById('profileAvatarUrl').value.trim();
+      const imageFileInput = document.getElementById('profileImageFile');
+
+      if (!name) return;
+
+      currentUser.name = name;
+      if (avatarUrl) {
+        currentUser.avatar = avatarUrl;
+      }
+
+      if (imageFileInput.files && imageFileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          currentUser.avatar = evt.target.result;
+          saveToLocalStorage();
+          closeProfileModalFunc();
+          renderAll();
+        };
+        reader.readAsDataURL(imageFileInput.files[0]);
+      } else {
+        saveToLocalStorage();
+        closeProfileModalFunc();
+        renderAll();
+      }
+    });
+
+    function openCategoryModal() {
+      const modal = document.getElementById('categoryModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.add('hidden');
+      document.getElementById('categoryModal').classList.remove('flex');
+      document.getElementById('categoryForm').reset();
+    }
+
+    document.getElementById('categoryForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const type = document.getElementById('categoryType').value;
+      const name = document.getElementById('categoryName').value.trim();
+      if (!name) return;
+      if (!categories[type].includes(name)) {
+        categories[type].push(name);
+        if (!categoryColors[name]) categoryColors[name] = type === 'income' ? '#7aa57f' : '#c99b77';
+        saveToLocalStorage();
+      }
+      closeCategoryModal();
+      renderCategories();
+    });
+
+    document.getElementById('addTransactionBtn').addEventListener('click', () => openTransactionModal());
+    document.getElementById('quickAddBtn').addEventListener('click', () => openTransactionModal());
+    document.getElementById('closeTransactionModal').addEventListener('click', closeTransactionModal);
+    document.getElementById('cancelTransactionBtn').addEventListener('click', closeTransactionModal);
+    document.getElementById('addCategoryBtn').addEventListener('click', openCategoryModal);
+    document.getElementById('closeCategoryModal').addEventListener('click', closeCategoryModal);
+    document.getElementById('cancelCategoryBtn').addEventListener('click', closeCategoryModal);
+
+    monthSelect.addEventListener('change', renderAll);
+    yearSelect.addEventListener('change', renderAll);
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    renderAll();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
